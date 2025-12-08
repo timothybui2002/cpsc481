@@ -9,7 +9,7 @@ An unbeatable AI Tic Tac Toe opponent using the minimax algorithm with alpha-bet
 **Prerequisites:** Python 3.7+ (tkinter included by default)
 
 ```bash
-python main.py
+python3 main.py
 ```
 
 **How to Play:**
