@@ -31,26 +31,26 @@ class TicTacToeGUI:
         self.ai_wins = 0
         self.ties = 0
 
-        # UI elements
         self.buttons = []
         self.status_label = None
-        self.explanation_label = None  # shown only when used
+        self.explanation_label = None
+
+        self.countdown_after_id = None  # fixes double reset issues
 
         self.build_ui()
         self.update_board()
-        self.update_status("Your turn (X).")
+        self.update_status("Your turn (X).")  # << this line is now correct
 
-    # ---------------- UI ----------------
+    # -------------------------------------------------------------------------
     def build_ui(self):
         control_frame = tk.Frame(self.root, pady=5)
         control_frame.pack()
 
         tk.Label(control_frame, text="Difficulty:").grid(row=0, column=0, padx=5)
-        difficulty_menu = ttk.OptionMenu(
+        ttk.OptionMenu(
             control_frame, self.current_difficulty, self.current_difficulty.get(),
             *self.difficulty_levels.keys(), command=self.on_change_difficulty
-        )
-        difficulty_menu.grid(row=0, column=1, padx=5)
+        ).grid(row=0, column=1, padx=5)
 
         tk.Checkbutton(control_frame, text="Tutor mode", variable=self.tutor_enabled)\
             .grid(row=0, column=2, padx=5)
@@ -61,7 +61,6 @@ class TicTacToeGUI:
         tk.Button(control_frame, text="Reset Scores", command=self.reset_scores)\
             .grid(row=0, column=4, padx=5)
 
-        # Board
         board_frame = tk.Frame(self.root, pady=10)
         board_frame.pack()
 
@@ -76,19 +75,11 @@ class TicTacToeGUI:
         self.status_label = tk.Label(self.root, text="", font=("Arial", 12))
         self.status_label.pack()
 
-        # Explanation label (hidden at start)
         self.explanation_label = tk.Label(
-            self.root,
-            text="",
-            wraplength=330,
-            justify="left",
-            font=("Arial", 12),
-            fg="white",
-            bg="black",
-            padx=6, pady=6
+            self.root, text="", wraplength=330, justify="left",
+            font=("Arial", 12), fg="white", bg="black", padx=6, pady=6
         )
 
-        # Scoreboard
         score_frame = tk.Frame(self.root, pady=5)
         score_frame.pack()
 
@@ -101,7 +92,12 @@ class TicTacToeGUI:
         self.tie_score_label = tk.Label(score_frame, text="Ties: 0", font=("Arial", 11))
         self.tie_score_label.grid(row=0, column=2, padx=10)
 
-    # ---------------- Helpers ----------------
+    # -------------------------------------------------------------------------
+    def cancel_countdown(self):
+        if self.countdown_after_id:
+            self.root.after_cancel(self.countdown_after_id)
+            self.countdown_after_id = None
+
     def update_board(self):
         for i in range(9):
             self.buttons[i].config(text=self.game.board[i], bg="SystemButtonFace")
@@ -109,25 +105,28 @@ class TicTacToeGUI:
     def update_status(self, text):
         self.status_label.config(text=text)
 
-    def on_change_difficulty(self, _value):
+    def on_change_difficulty(self, _):
         self.ai.max_depth = self.difficulty_levels[self.current_difficulty.get()]
         self.update_status(f"Difficulty set to {self.current_difficulty.get()}. Your turn (X).")
 
     def highlight_winning_line(self):
-        from ttt_game import TicTacToe as GameClass
-        for a, b, c in GameClass.WINNING_COMBOS:
+        from ttt_game import TicTacToe as G
+        for a, b, c in G.WINNING_COMBOS:
             if self.game.board[a] == self.game.board[b] == self.game.board[c] != " ":
                 for idx in (a, b, c):
                     self.buttons[idx].config(bg="lightgreen")
                 break
 
+    # -------------------------------------------------------------------------
     def reset_game(self):
+        self.cancel_countdown()
         self.game.reset()
         self.update_board()
         self.update_status("Your turn (X).")
         self.explanation_label.pack_forget()
 
     def reset_scores(self):
+        self.cancel_countdown()
         self.player_wins = self.ai_wins = self.ties = 0
         self.refresh_scoreboard()
         self.update_status("Scores reset.")
@@ -138,7 +137,7 @@ class TicTacToeGUI:
         self.ai_score_label.config(text=f"AI (O) wins: {self.ai_wins}")
         self.tie_score_label.config(text=f"Ties: {self.ties}")
 
-    # ---------------- Gameplay ----------------
+    # -------------------------------------------------------------------------
     def player_move(self, index):
         if self.game.game_over() or self.game.board[index] != " ":
             return
@@ -154,25 +153,26 @@ class TicTacToeGUI:
         self.root.after(250, self.ai_move)
 
     def ai_move(self):
+        if self.game.game_over():
+            return
+
         original = self.game.clone_board()
         move, score = self.ai.get_best_move(self.game)
         self.game.make_move(move)
         self.update_board()
 
         if self.tutor_enabled.get():
-            explanation = explain_move(original, move, self.ai_mark, self.human_mark)
-            full_message = explanation + f"\n\nMove Score: {score}"
-
+            msg = explain_move(original, move, self.ai_mark, self.human_mark) + f"\n\nMove Score: {score}"
             if not self.explanation_label.winfo_ismapped():
                 self.explanation_label.pack(pady=8)
-            self.explanation_label.config(text=full_message, fg="white", bg="black")
+            self.explanation_label.config(text=msg)
 
         if self.game.game_over():
             self.end_game()
         else:
             self.update_status("Your turn (X).")
 
-    # ----------- END GAME + COUNTDOWN RESET -----------
+    # -------------------------------------------------------------------------
     def end_game(self):
         winner = self.game.get_winner()
 
@@ -189,19 +189,19 @@ class TicTacToeGUI:
             self.update_status("AI wins!")
 
         self.refresh_scoreboard()
-
-        # Start countdown instead of instant reset 🔥
+        self.cancel_countdown()
         self.start_countdown(5)
 
-    def start_countdown(self, seconds):
-        if seconds > 0:
-            self.update_status(f"New game in {seconds}...")
-            self.root.after(1000, lambda: self.start_countdown(seconds - 1))
+    def start_countdown(self, t):
+        if t > 0:
+            self.update_status(f"New game in {t}...")
+            self.countdown_after_id = self.root.after(1000, lambda: self.start_countdown(t-1))
         else:
+            self.countdown_after_id = None
             self.reset_game()
 
 
-# Run program
+# -------------------------------------------------------------------------
 if __name__ == "__main__":
     root = tk.Tk()
     app = TicTacToeGUI(root)
