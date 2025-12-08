@@ -31,7 +31,7 @@ python main.py
 Run the included performance test suite:
 
 ```bash
-python performance_test.py
+python3 performance_test.py
 ```
 
 This tests AI speed across 5 scenarios: first move, mid-game, endgame, multi-game stats, and board complexity analysis.
@@ -68,3 +68,4 @@ python -m unittest test_game -v
 - Alpha-beta pruning reduces time complexity from O(b^d) to O(b^(d/2))
 - Heuristic evaluation: center +3, corners +2, threats ±5
 - Game always starts with human (X)
+
