@@ -42,11 +42,10 @@ class PerformanceMetrics:
 
 def count_nodes(ai: MinimaxAI, game: TicTacToe) -> int:
     """
-    Approximate node count by counting recursive calls.
-    Note: This is a simplified count; actual implementation would require
-    instrumenting the minimax function.
+    Return the actual node count from the last minimax evaluation.
+    Counts all recursive calls made during the search.
     """
-    return len(game.available_moves()) ** ai.max_depth  # Rough upper bound
+    return ai.nodes_evaluated
 
 
 # ============================================================================
@@ -180,8 +179,8 @@ def test_winning_move_detection() -> int:
 
 def test_blocking_move_detection() -> int:
     """
-    Test if AI correctly blocks opponent's winning moves.
-    Returns number of blocks correctly identified.
+    Test if AI correctly handles threatening positions (blocks or wins).
+    Returns number of cases where AI prevents opponent from winning immediately.
     """
     ai = MinimaxAI(ai_mark="O", human_mark="X", max_depth=9)
     test_cases = [
@@ -199,13 +198,23 @@ def test_blocking_move_detection() -> int:
         
         move, _ = ai.get_best_move(game)
         
-        # Check if AI blocked the threat
-        game_test = TicTacToe()
-        game_test.board = board[:]
-        game_test.board[must_block_pos] = "X"
-        is_winning_pos = game_test.get_winner() == "X"
+        # After AI's move, check if opponent can still win immediately
+        game_after_ai = TicTacToe()
+        game_after_ai.board = board[:]
+        game_after_ai.board[move] = "O"
+        game_after_ai.current_player = "X"
         
-        if is_winning_pos and move == must_block_pos:
+        opponent_can_win_next = False
+        for opp_move in game_after_ai.available_moves():
+            game_after_ai.board[opp_move] = "X"
+            if game_after_ai.get_winner() == "X":
+                opponent_can_win_next = True
+                game_after_ai.board[opp_move] = " "
+                break
+            game_after_ai.board[opp_move] = " "
+        
+        # AI did well if opponent can't win immediately
+        if not opponent_can_win_next:
             correct_blocks += 1
     
     return correct_blocks

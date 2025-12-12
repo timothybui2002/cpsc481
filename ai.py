@@ -15,12 +15,14 @@ class MinimaxAI:
         self.ai_mark = ai_mark
         self.human_mark = human_mark
         self.max_depth = max_depth
+        self.nodes_evaluated = 0
 
     def get_best_move(self, game: TicTacToe) -> Tuple[int, int]:
         """
         Returns (best_move_index, best_score).
         The tutor explanation text is generated separately in tutor.py.
         """
+        self.nodes_evaluated = 0  # Reset counter for this move
         best_score = -inf
         best_move = -1
 
@@ -52,6 +54,7 @@ class MinimaxAI:
                  is_maximizing: bool,
                  alpha: float,
                  beta: float) -> float:
+        self.nodes_evaluated += 1
         winner = game.get_winner()
         # Terminal states
         if winner == self.ai_mark:
