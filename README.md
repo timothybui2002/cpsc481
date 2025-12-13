@@ -51,7 +51,7 @@ python3 performance_test.py
 Run the unit test suite:
 
 ```bash
-python -m unittest test_game -v
+python3 -m unittest test_game -v
 ```
 
 **Coverage:** 15 essential tests
@@ -88,4 +88,5 @@ Russell, S. J., & Norvig, P. (2021). Artificial intelligence: A modern approach 
 Stack Overflow. (n.d.). Stack Overflow. https://stackoverflow.com
 
 Wikipedia contributors. (n.d.). Alpha–beta pruning. https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
+
 
