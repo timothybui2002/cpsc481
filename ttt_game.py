@@ -1,15 +1,6 @@
-# ttt_game.py
-
 from typing import List, Optional
 
 class TicTacToe:
-    """
-    Simple 3x3 Tic Tac Toe game logic.
-    Board indices:
-        0 | 1 | 2
-        3 | 4 | 5
-        6 | 7 | 8
-    """
 
     WINNING_COMBOS = [
         (0, 1, 2),
@@ -34,7 +25,6 @@ class TicTacToe:
         return [i for i, v in enumerate(self.board) if v == " "]
 
     def make_move(self, index: int) -> bool:
-        """Place current_player's mark at index if valid, then switch player."""
         if 0 <= index < 9 and self.board[index] == " ":
             self.board[index] = self.current_player
             self.current_player = "O" if self.current_player == "X" else "X"

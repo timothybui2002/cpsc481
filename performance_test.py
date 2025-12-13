@@ -1,11 +1,3 @@
-"""
-Performance testing script for the Minimax AI with Alpha-Beta Pruning.
-Measures:
-  - CORRECTNESS: Move optimality and game outcomes
-  - LATENCY: Execution time across different game states
-  - CONSISTENCY: Alpha-beta pruning correctness
-"""
-
 import time
 from typing import Dict, List, Tuple, Set
 from ttt_game import TicTacToe
@@ -66,14 +58,8 @@ def test_move_quality(ai: MinimaxAI, game: TicTacToe) -> Tuple[int, int]:
     
     return correctness_score, best_possible_score
 
-
+# Play multiple full games where AI plays optimally
 def test_ai_never_loses() -> Tuple[int, int, int]:
-    """
-    Play multiple full games where AI plays optimally.
-    Returns (wins, ties, losses).
-    
-    For a perfect minimax with full depth, AI should never lose.
-    """
     ai = MinimaxAI(ai_mark="O", human_mark="X", max_depth=9)
     wins = 0
     ties = 0
@@ -123,10 +109,6 @@ def test_ai_never_loses() -> Tuple[int, int, int]:
 
 
 def test_winning_move_detection() -> int:
-    """
-    Test if AI correctly identifies and plays winning moves.
-    Returns number of winning moves correctly identified out of test cases.
-    """
     ai = MinimaxAI(ai_mark="O", human_mark="X", max_depth=9)
     test_cases = [
         # (board, expected_winning_move, description)
@@ -162,10 +144,6 @@ def test_winning_move_detection() -> int:
 
 
 def test_blocking_move_detection() -> int:
-    """
-    Test if AI correctly handles threatening positions (blocks or wins).
-    Returns number of cases where AI prevents opponent from winning immediately.
-    """
     ai = MinimaxAI(ai_mark="O", human_mark="X", max_depth=9)
     test_cases = [
         # (board, position_where_opponent_wins_if_not_blocked)
@@ -203,9 +181,8 @@ def test_blocking_move_detection() -> int:
     
     return correct_blocks
 
-
+# Test AI performance on the first move
 def test_first_move():
-    """Test AI performance on the first move."""
     print("\n" + "="*70)
     print("TEST 1: First Move Performance (Latency)")
     print("="*70)
@@ -233,9 +210,8 @@ def test_first_move():
         print(f"  Score: {score}")
         print(f"  Time: {elapsed:.4f}s")
 
-
+# Test AI performance in mid-game scenarios
 def test_mid_game_performance():
-    """Test AI performance in mid-game scenarios."""
     print("\n" + "="*70)
     print("TEST 2: Mid-Game Performance (Latency)")
     print("="*70)
@@ -265,9 +241,8 @@ def test_mid_game_performance():
         print(f"  Score: {score}")
         print(f"  Time: {elapsed:.4f}s")
 
-
+# Test AI performance when close to winning/losing
 def test_endgame_performance():
-    """Test AI performance when close to winning/losing."""
     print("\n" + "="*70)
     print("TEST 3: Endgame Performance - Winning Move (Latency)")
     print("="*70)
@@ -297,9 +272,8 @@ def test_endgame_performance():
         print(f"  Score: {score}")
         print(f"  Time: {elapsed:.4f}s")
 
-
+# Run multiple games and collect statistics
 def test_multiple_games():
-    """Run multiple games and collect statistics."""
     print("\n" + "="*70)
     print("TEST 4: Statistics Over 10 Games (Hard Difficulty)")
     print("="*70)
@@ -312,7 +286,7 @@ def test_multiple_games():
         ai = MinimaxAI(max_depth=9)
         moves_made = 0
         
-        while not game.game_over() and moves_made < 5:  # First 5 moves
+        while not game.game_over() and moves_made < 5:  
             available = game.available_moves()
             if not available:
                 break
@@ -342,12 +316,8 @@ def test_multiple_games():
     print(f"  Maximum: {metrics.max_time():.4f}s")
     print(f"  Total time: {sum(metrics.move_times):.4f}s")
 
-
+# Test if AI never loses at EACH difficulty level
 def test_never_loses_all_depths():
-    """
-    Test if AI never loses at EACH difficulty level.
-    Compares behavior across Easy, Medium, and Hard.
-    """
     print("\n" + "="*70)
     print("TEST 5: Never Loses - All Difficulty Levels")
     print("="*70)
@@ -360,7 +330,7 @@ def test_never_loses_all_depths():
         ties = 0
         losses = 0
         
-        for game_num in range(5):  # 5 games per difficulty
+        for game_num in range(5):  
             game = TicTacToe()
             move_count = 0
             
@@ -400,12 +370,8 @@ def test_never_loses_all_depths():
         else:
             print(f"  FAIL: Lost {losses} game(s)")
 
-
+# Show what move each difficulty level selects for the same board
 def test_move_selection_across_depths():
-    """
-    Show what move each difficulty level selects for the same board.
-    Compares decision-making across Easy, Medium, and Hard.
-    """
     print("\n" + "="*70)
     print("TEST 6: Move Selection Comparison Across Depths")
     print("="*70)
@@ -446,12 +412,8 @@ def test_move_selection_across_depths():
         else:
             print(f"  → Depths DISAGREE: Easy={moves[0]+1}, Medium={moves[1]+1}, Hard={moves[2]+1}")
 
-
+# Play a complete game with each difficulty level and show move sequence
 def test_full_game_trace():
-    """
-    Play a complete game with each difficulty level and show move sequence.
-    Demonstrates strategy differences.
-    """
     print("\n" + "="*70)
     print("TEST 7: Complete Game Traces - Strategy Comparison")
     print("="*70)
@@ -500,9 +462,8 @@ def test_full_game_trace():
         for i in range(0, 9, 3):
             print(f"  {game.board[i]} | {game.board[i+1]} | {game.board[i+2]}")
 
-
+# Compare AI response time across different board state
 def compare_board_complexity():
-    """Compare AI response time across different board states."""
     print("\n" + "="*70)
     print("TEST 8: Response Time by Board Complexity (Latency)")
     print("="*70)
@@ -536,9 +497,8 @@ def compare_board_complexity():
         print(f"  Move chosen: {move} (position {move + 1})")
         print(f"  Time: {elapsed:.4f}s")
 
-
+# Run all performance tests
 def main():
-    """Run all performance tests."""
     print("\n" + "="*70)
     print("MINIMAX AI PERFORMANCE & CORRECTNESS TESTING SUITE")
     print("="*70)
@@ -587,9 +547,6 @@ def main():
     else:
         print(f"  PARTIAL: AI failed to block {total_block_tests - blocks_correct} threat(s)")
     
-    # ========================================================================
-    # DEPTH COMPARISON TESTS (Strategy & Quality)
-    # ========================================================================
     print("\n" + "="*70)
     print("DEPTH COMPARISON TESTS (Easy vs Medium vs Hard)")
     print("="*70)
@@ -598,9 +555,6 @@ def main():
     test_move_selection_across_depths()
     test_full_game_trace()
     
-    # ========================================================================
-    # LATENCY TESTS (Performance)
-    # ========================================================================
     print("\n" + "="*70)
     print("LATENCY TESTS (Performance)")
     print("="*70)
@@ -611,9 +565,6 @@ def main():
     test_multiple_games()
     compare_board_complexity()
     
-    # ========================================================================
-    # SUMMARY
-    # ========================================================================
     print("\n" + "="*70)
     print("TESTING COMPLETE")
     print("="*70)

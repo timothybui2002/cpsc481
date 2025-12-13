@@ -5,11 +5,9 @@ from typing import Tuple
 
 from ttt_game import TicTacToe
 
-
+# Minimax AI with alpha-beta pruning and a point-based heuristic
 class MinimaxAI:
-    """
-    Minimax AI with alpha-beta pruning and a point-based heuristic.
-    """
+
 
     def __init__(self, ai_mark: str = "O", human_mark: str = "X", max_depth: int = 9) -> None:
         self.ai_mark = ai_mark
@@ -48,9 +46,9 @@ class MinimaxAI:
         self.nodes_evaluated += 1
         winner = game.get_winner()
         if winner == self.ai_mark:
-            return 100 - depth  # prefer faster wins
+            return 100 - depth  
         elif winner == self.human_mark:
-            return depth - 100  # prefer slower losses
+            return depth - 100  
         elif winner == "Tie":
             return 0
 

@@ -1,5 +1,3 @@
-# tutor.py
-
 from typing import List
 
 WINNING_COMBOS = [
