@@ -11,14 +11,12 @@ class TicTacToeGUI:
         self.root = root
         self.root.title("Tic Tac Toe - AI with Tutor Mode")
 
-        # Game settings
         self.game = TicTacToe()
         self.human_mark = "X"
         self.ai_mark = "O"
 
         self.difficulty_levels = {"Easy": 2, "Medium": 4, "Hard": 9}
         self.current_difficulty = tk.StringVar(value="Hard")
-
         self.ai = MinimaxAI(
             ai_mark=self.ai_mark,
             human_mark=self.human_mark,
@@ -26,7 +24,6 @@ class TicTacToeGUI:
         )
 
         self.tutor_enabled = tk.BooleanVar(value=True)
-
         self.player_wins = 0
         self.ai_wins = 0
         self.ties = 0
@@ -34,14 +31,12 @@ class TicTacToeGUI:
         self.buttons = []
         self.status_label = None
         self.explanation_label = None
-
-        self.countdown_after_id = None  # fixes double reset issues
+        self.countdown_after_id = None
 
         self.build_ui()
         self.update_board()
-        self.update_status("Your turn (X).")  # << this line is now correct
+        self.update_status("Your turn (X).")
 
-    # -------------------------------------------------------------------------
     def build_ui(self):
         control_frame = tk.Frame(self.root, pady=5)
         control_frame.pack()
@@ -92,7 +87,6 @@ class TicTacToeGUI:
         self.tie_score_label = tk.Label(score_frame, text="Ties: 0", font=("Arial", 11))
         self.tie_score_label.grid(row=0, column=2, padx=10)
 
-    # -------------------------------------------------------------------------
     def cancel_countdown(self):
         if self.countdown_after_id:
             self.root.after_cancel(self.countdown_after_id)
@@ -117,7 +111,6 @@ class TicTacToeGUI:
                     self.buttons[idx].config(bg="lightgreen")
                 break
 
-    # -------------------------------------------------------------------------
     def reset_game(self):
         self.cancel_countdown()
         self.game.reset()
@@ -137,7 +130,6 @@ class TicTacToeGUI:
         self.ai_score_label.config(text=f"AI (O) wins: {self.ai_wins}")
         self.tie_score_label.config(text=f"Ties: {self.ties}")
 
-    # -------------------------------------------------------------------------
     def player_move(self, index):
         if self.game.game_over() or self.game.board[index] != " ":
             return
@@ -172,7 +164,6 @@ class TicTacToeGUI:
         else:
             self.update_status("Your turn (X).")
 
-    # -------------------------------------------------------------------------
     def end_game(self):
         winner = self.game.get_winner()
 
@@ -201,7 +192,6 @@ class TicTacToeGUI:
             self.reset_game()
 
 
-# -------------------------------------------------------------------------
 if __name__ == "__main__":
     root = tk.Tk()
     app = TicTacToeGUI(root)

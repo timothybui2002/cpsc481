@@ -45,20 +45,10 @@ class TicTacToe:
         return all(v != " " for v in self.board)
 
     def get_winner(self) -> Optional[str]:
-        """
-        Returns:
-            "X" or "O" if there is a winner,
-            "Tie" if the board is full with no winner,
-            None if the game is not over.
-        """
         for a, b, c in self.WINNING_COMBOS:
             if self.board[a] != " " and self.board[a] == self.board[b] == self.board[c]:
                 return self.board[a]
-
-        if self.is_full():
-            return "Tie"
-
-        return None
+        return "Tie" if self.is_full() else None
 
     def game_over(self) -> bool:
         return self.get_winner() is not None

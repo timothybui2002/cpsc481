@@ -13,8 +13,7 @@ from ai import MinimaxAI
 
 
 class PerformanceMetrics:
-    """Tracks AI performance statistics."""
-    
+
     def __init__(self):
         self.move_times: List[float] = []
         self.nodes_evaluated: int = 0
@@ -36,55 +35,32 @@ class PerformanceMetrics:
         return max(self.move_times) if self.move_times else 0
     
     def correctness_rate(self) -> float:
-        """Returns percentage of correct/optimal moves made."""
+
         return (self.correct_moves / self.total_evaluated * 100) if self.total_evaluated > 0 else 0
 
 
 def count_nodes(ai: MinimaxAI, game: TicTacToe) -> int:
-    """
-    Return the actual node count from the last minimax evaluation.
-    Counts all recursive calls made during the search.
-    """
     return ai.nodes_evaluated
 
 
-# ============================================================================
-# CORRECTNESS TESTING FUNCTIONS
-# ============================================================================
-
 def test_move_quality(ai: MinimaxAI, game: TicTacToe) -> Tuple[int, int]:
-    """
-    Verify the AI chooses a move that doesn't lead to a loss.
-    Returns (correctness_score, best_possible_score).
-    
-    Correctness = does the AI's move lead to optimal play?
-    For tic-tac-toe, optimal play means:
-    - Never missing a winning opportunity
-    - Always blocking a losing threat
-    - Avoiding moves that lead to loss
-    """
     move, ai_score = ai.get_best_move(game)
     
-    # Check all available moves to find if there's a better one
     game_copy = TicTacToe()
     game_copy.board = game.board[:]
     game_copy.current_player = game.current_player
     
     all_moves_scores = []
     for candidate_move in game_copy.available_moves():
-        # Try the move
         game_copy.board[candidate_move] = ai.ai_mark
         score = ai._minimax(game_copy, depth=1, is_maximizing=False, 
                            alpha=float('-inf'), beta=float('inf'))
-        game_copy.board[candidate_move] = " "  # undo
-        all_moves_scores.append((candidate_move, score))
     
     if not all_moves_scores:
         return 0, 0
     
     best_possible_score = max(score for _, score in all_moves_scores)
     
-    # AI is correct if it found a move with the best possible score
     is_optimal = ai_score == best_possible_score
     correctness_score = 100 if is_optimal else 0
     
@@ -636,7 +612,7 @@ def main():
     compare_board_complexity()
     
     # ========================================================================
-    # SUMMARY & RECOMMENDATIONS
+    # SUMMARY
     # ========================================================================
     print("\n" + "="*70)
     print("TESTING COMPLETE")
