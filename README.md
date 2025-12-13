@@ -79,7 +79,13 @@ python -m unittest test_game -v
 ## Academic References
 
 This implementation follows principles from classic game AI research:
-- **Knuth & Moore (1975)**: Alpha-beta pruning efficiency analysis
-- **Schaeffer et al. (1992)**: Game-playing AI evaluation methodology
-- **Russell & Norvig (2020)**: Minimax with evaluation functions (AIMA textbook)
+California State University, Fullerton. (2025). CPSC 481 lecture materials: Adversarial search and game-playing agents. Course handouts.
+
+Python Software Foundation. (n.d.). Tkinter documentation. https://docs.python.org/3/library/tkinter.html
+
+Russell, S. J., & Norvig, P. (2021). Artificial intelligence: A modern approach (4th ed.). Pearson Education.
+
+Stack Overflow. (n.d.). Stack Overflow. https://stackoverflow.com
+
+Wikipedia contributors. (n.d.). Alpha–beta pruning. https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
